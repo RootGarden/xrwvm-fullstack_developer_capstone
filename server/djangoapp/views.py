@@ -12,6 +12,7 @@ from .populate import initiate
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+
 @csrf_exempt
 def login_user(request):
     data = json.loads(request.body)
@@ -45,7 +46,7 @@ def registration(request):
     except User.DoesNotExist:
         logger.debug(f"{username} is new user")
     if not username_exist:
-        user = User.objects.create_user(username=username, 
+        user = User.objects.create_user(username=username,
                                         first_name=first_name,
                                         last_name=last_name, password=password,
                                         email=email)
@@ -91,7 +92,8 @@ def add_review(request):
             post_review(data)
             return JsonResponse({"status": 200})
         except Exception as e:
-            return JsonResponse({"status": 401, "message": f"Error in posting review: {e}"})
+            return JsonResponse({"status": 401, "message":
+                                 f"Error in posting review: {e}"})
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
 
@@ -102,5 +104,6 @@ def get_cars(request):
         # Assuming 'initiate' is defined elsewhere and imported properly
         initiate()
     car_models = CarModel.objects.select_related('car_make')
-    cars = [{"CarModel": car_model.name, "CarMake": car_model.car_make.name} for car_model in car_models]
+    cars = [{"CarModel": car_model.name, "CarMake":
+             car_model.car_make.name} for car_model in car_models]
     return JsonResponse({"CarModels": cars})
