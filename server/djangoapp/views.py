@@ -6,6 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import CarMake, CarModel
 from .restapis import get_request, analyze_review_sentiments, post_review
 from django.http import JsonResponse
+from .populate import initiate
+
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -21,10 +23,12 @@ def login_user(request):
         data = {"userName": username, "status": "Authenticated"}
     return JsonResponse(data)
 
+
 def logout_request(request):
     logout(request)
     data = {"userName": ""}
     return JsonResponse(data)
+
 
 @csrf_exempt
 def registration(request):
@@ -41,8 +45,10 @@ def registration(request):
     except User.DoesNotExist:
         logger.debug(f"{username} is new user")
     if not username_exist:
-        user = User.objects.create_user(username=username, first_name=first_name,
-                                        last_name=last_name, password=password, email=email)
+        user = User.objects.create_user(username=username, 
+                                        first_name=first_name,
+                                        last_name=last_name, password=password,
+                                        email=email)
         login(request, user)
         data = {"userName": username, "status": "Authenticated"}
         return JsonResponse(data)
@@ -50,10 +56,12 @@ def registration(request):
         data = {"userName": username, "error": "Already Registered"}
         return JsonResponse(data)
 
+
 def get_dealerships(request, state="All"):
     endpoint = "/fetchDealers" if state == "All" else f"/fetchDealers/{state}"
     dealerships = get_request(endpoint)
     return JsonResponse({"status": 200, "dealers": dealerships})
+
 
 def get_dealer_reviews(request, dealer_id):
     if dealer_id:
@@ -66,6 +74,7 @@ def get_dealer_reviews(request, dealer_id):
     else:
         return JsonResponse({"status": 400, "message": "Bad Request"})
 
+
 def get_dealer_details(request, dealer_id):
     if dealer_id:
         endpoint = f"/fetchDealer/{dealer_id}"
@@ -73,6 +82,7 @@ def get_dealer_details(request, dealer_id):
         return JsonResponse({"status": 200, "dealer": dealership})
     else:
         return JsonResponse({"status": 400, "message": "Bad Request"})
+
 
 def add_review(request):
     if not request.user.is_anonymous:
@@ -84,6 +94,7 @@ def add_review(request):
             return JsonResponse({"status": 401, "message": f"Error in posting review: {e}"})
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})
+
 
 def get_cars(request):
     count = CarMake.objects.count()
