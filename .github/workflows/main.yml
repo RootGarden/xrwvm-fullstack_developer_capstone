@@ -7,7 +7,7 @@ on:
 jobs:
   lint_python:
     name: Lint Python Files
-    runs-on: ubuntu-latest
+    runs-on: ubuntu:latest
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
         echo "Linted all the python files successfully"
   lint_js:
       name: Lint JavaScript Files
-      runs-on: ubuntu-latest
+      runs-on: ubuntu:latest
       steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
